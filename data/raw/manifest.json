@@ -1,0 +1,18 @@
+{
+  "datasets": [
+    {
+      "filename": "Matches.csv",
+      "bytes": 45600576,
+      "sha256": "d724472b2022f71f77f218552660da5fc9f815450155bb6503b3000d5e3f868b",
+      "origin": "Uploaded attachment in Discover Project Idea",
+      "processing": "None; byte-for-byte copy"
+    },
+    {
+      "filename": "EloRatings.csv",
+      "bytes": 11302269,
+      "sha256": "e9f6020b2bca88ec5974aa934b5e1f3b59220729119c768404bd962a71da1343",
+      "origin": "Uploaded attachment in Discover Project Idea",
+      "processing": "None; byte-for-byte copy"
+    }
+  ]
+}
