@@ -1,8 +1,129 @@
 @import "tailwindcss";
 
+/* Light is the default. Dark applies only when the user picks it (data-theme="dark"). */
+:root {
+  --bg: #f3f7f4;
+  --panel: #ffffff;
+  --sidebar: #f8faf9;
+  --border: #d9e3dd;
+  --border-soft: #e8efea;
+  --ink: #10221a;
+  --muted: #465a4f;
+  --faint: #5b6d62;
+  --brand: #0b7a4b;
+  --brand-strong: #08643d;
+  --brand-ink: #ffffff;
+  --brand-soft: #e3f2ea;
+  --live: #c22b31;
+  --live-soft: #fce9ea;
+  --live-ink: #ffffff;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0c1310;
+  --panel: #131d18;
+  --sidebar: #0f1814;
+  --border: #25352d;
+  --border-soft: #1c2922;
+  --ink: #ebf4ee;
+  --muted: #b0c2b7;
+  --faint: #93a79b;
+  --brand: #3ddc97;
+  --brand-strong: #6ee7b0;
+  --brand-ink: #052015;
+  --brand-soft: #163427;
+  --live: #ff7378;
+  --live-soft: #3a1a1d;
+  --live-ink: #2b0709;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-sidebar: var(--sidebar);
+  --color-line: var(--border);
+  --color-line-soft: var(--border-soft);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-brand: var(--brand);
+  --color-brand-strong: var(--brand-strong);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-soft: var(--brand-soft);
+  --color-live: var(--live);
+  --color-live-soft: var(--live-soft);
+  --color-live-ink: var(--live-ink);
+  --font-sans: var(--font-barlow), system-ui, sans-serif;
+  --font-display: var(--font-barlow-condensed), var(--font-barlow), system-ui, sans-serif;
+}
+
 body {
   margin: 0;
-  background: #f8fafc;
-  color: #0f172a;
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Many club and league logos are dark; a light tile keeps them visible in the dark theme. */
+:root[data-theme="dark"] .crest {
+  background: #eef3f0;
+  border-radius: 6px;
+  padding: 2px;
+}
+
+/* A brief highlight when a live score changes. */
+@keyframes score-flash {
+  0% {
+    background: color-mix(in srgb, var(--brand) 35%, transparent);
+  }
+  100% {
+    background: transparent;
+  }
+}
+.score-flash {
+  animation: score-flash 2.4s ease-out;
+}
+
+@keyframes live-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.live-dot {
+  animation: live-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--border-soft) 25%, var(--border) 50%, var(--border-soft) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .score-flash,
+  .live-dot,
+  .skeleton {
+    animation: none;
+  }
 }

@@ -1,6 +1,6 @@
 # Project scope
 
-M0 foundation only. Read README.md and docs/ROADMAP.md. Do not implement later milestones without user authorization. Preserve raw datasets; never commit them or import them into browser code. Use Node 22 and run npm run check for code changes.
+M0 is accepted and slice 1 of M1/M2 (the Matches page with live FotMob data) is built and awaiting review. Read README.md and docs/ROADMAP.md. Do not implement later slices or milestones without user authorization. Preserve raw datasets; never commit them or import them into browser code. Use Node 22 and run npm run check for code changes.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

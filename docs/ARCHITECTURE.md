@@ -9,7 +9,21 @@
 - `data/raw/`: unchanged local source datasets, excluded from Git and web assets.
 - ESLint and separate typecheck/build commands. Git tracks code and documentation.
 
-There is no database, backend API, provider client, MCP connection, AI SDK, or ingestion job. The app does not read the CSVs. No credentials or environment variables are required. System fonts avoid a build-time font download.
+At M0 there was no database, backend API, provider client, MCP connection, AI SDK, or ingestion job. The app still does not read the CSVs, and there is still no database or AI SDK.
+
+## Implemented in slice 1 (Matches page)
+
+Data flow: page (server component) → `getMatchesByDate` / `getPlayerProfile` (`use cache`) → server-only `mcp.ts` → a small HTTP client (`mcp-http.ts`) → FotMob MCP in HTTP mode → FotMob. Results are validated (`parse.ts`, `player-parse.ts`); a bad or missing response becomes an explicit "unavailable" state, never an empty day.
+
+- **Failures are never cached.** Only the successful fetch runs inside the cached function; a failure throws out of it (Next does not store a thrown error) and a wrapper turns it into "unavailable". Verified by stopping and restarting the MCP: the first reload after it returned showed live data.
+- **The MCP client is deliberately minimal.** It sends POST requests (initialize, initialized, tools/call), then deletes its session. The full MCP client library was removed: it opened a background server-message stream per connection, which leaked and made calls fail intermittently.
+- **Routes:** two route groups share the root layout: `(app)` (classic list with sidebar, at `/`) and `(lab)` (dashboard prototype, at `/dashboard`).
+
+- Cache Components is enabled (`next.config.ts`). Anything time- or URL-dependent renders at view time inside `<Suspense>`.
+- The live minute is counted forward in the browser from the exact clock FotMob reported (`src/lib/clock.ts`); a 30-second `router.refresh()` corrects it. The server cache lifetime is kept shorter than the refresh interval.
+- Theme: `data-theme` on `<html>`, applied by an inline script before first paint; the choice is stored in localStorage.
+- Configuration: `FOTMOB_MCP_URL` and `APP_TIMEZONE` (both optional). Day boundaries and kick-off times use one configured timezone.
+- Club and league logos are loaded by the browser from FotMob's image host, with initials as a fallback.
 
 ## Proposed boundaries for later milestones
 
