@@ -46,12 +46,20 @@ export function Sidebar() {
       aria-label="Site"
       className="sticky top-0 hidden h-screen w-[232px] shrink-0 flex-col border-r border-line bg-sidebar px-3 py-5 md:flex"
     >
-      <Link href="/" className="mb-6 flex items-center gap-2 px-2.5 font-display text-[21px] font-bold leading-none text-brand">
+      <Link href="/dashboard" className="mb-6 flex items-center gap-2 px-2.5 font-display text-[21px] font-bold leading-none text-brand">
         <BallIcon />
         Football Intelligence
       </Link>
       <nav aria-label="Matches and leagues" className="overflow-y-auto">
-        <ul>
+        <ul className="flex flex-col gap-0.5">
+          <li>
+            <Link href="/dashboard" className={`${base} ${idle}`}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z" />
+              </svg>
+              Home
+            </Link>
+          </li>
           <li>
             <Link
               href={matchesHref({ date, live })}

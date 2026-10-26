@@ -1,7 +1,8 @@
+import Link from "next/link";
 import type { CSSProperties } from "react";
 
 import { formatKickoff } from "@/lib/dates";
-import type { LeagueSection, Match, MatchTeam } from "@/lib/fotmob/types";
+import type { CompetitionGroup, Match, Team as MatchTeam } from "@/lib/matches/model";
 
 import { Crest } from "../Crest";
 import { LiveMinute } from "../LiveMinute";
@@ -10,21 +11,21 @@ function Team({ team }: { team: MatchTeam }) {
   return (
     <div className="lab-mc-team">
       <span className="lab-mc-crest">
-        <Crest kind="team" id={team.id} name={team.name} size={40} />
+        <Crest src={team.crestUrl} name={team.name} size={40} />
       </span>
       <span>{team.name}</span>
     </div>
   );
 }
 
-function Status({ match, tz, fetchedAtMs }: { match: Match; tz: string; fetchedAtMs: number }) {
-  switch (match.state) {
+function Status({ match, tz }: { match: Match; tz: string }) {
+  switch (match.status) {
     case "live":
       return (
         <span className="lab-live">
           <i aria-hidden="true" />
           <span className="sr-only">Live, </span>
-          {match.minute ? <LiveMinute minute={match.minute} clock={match.clock} fetchedAtMs={fetchedAtMs} /> : "Live"}
+          {match.live?.minuteLabel ? <LiveMinute minute={match.live.minuteLabel} clockSeconds={match.live.clockSeconds} fetchedAtMs={Date.parse(match.live.asOfUtc)} /> : "Live"}
         </span>
       );
     case "halftime":
@@ -36,26 +37,25 @@ function Status({ match, tz, fetchedAtMs }: { match: Match; tz: string; fetchedA
     case "cancelled":
       return <span className="lab-pill">Cancelled</span>;
     default:
-      return <span className="lab-pill">{formatKickoff(match.kickoffUtc, tz) ?? "TBC"}</span>;
+      return <span className="lab-pill">{formatKickoff(match.kickoffUtc ?? undefined, tz) ?? "TBC"}</span>;
   }
 }
 
-type Props = { league: LeagueSection; match: Match; tz: string; fetchedAtMs: number; index: number };
+type Props = { league: CompetitionGroup; match: Match; tz: string; index: number };
 
-export function LabMatchCard({ league, match, tz, fetchedAtMs, index }: Props) {
-  const started = match.state === "live" || match.state === "halftime" || match.state === "finished";
-  const { score: homeScore } = match.home;
-  const { score: awayScore } = match.away;
+export function LabMatchCard({ league, match, tz, index }: Props) {
+  const homeScore = match.score?.home;
+  const awayScore = match.score?.away;
 
   return (
-    <article className="lab-card lab-mc reveal" style={{ "--i": index + 5 } as CSSProperties}>
+    <Link href={`/matches/${encodeURIComponent(match.id)}`} className="detail-match-link"><article className="lab-card lab-mc reveal" style={{ "--i": index + 5 } as CSSProperties}>
       <div className="lab-mc-top">
-        <span className="lab-eyebrow">{league.name}</span>
-        <Status match={match} tz={tz} fetchedAtMs={fetchedAtMs} />
+        <span className="lab-eyebrow">{league.competition.name}</span>
+        <Status match={match} tz={tz} />
       </div>
       <div className="lab-mc-row">
         <Team team={match.home} />
-        {started && homeScore !== undefined && awayScore !== undefined ? (
+        {match.score !== null ? (
           <span key={`${homeScore}-${awayScore}`} className="lab-mc-score lab-score-pop">
             {homeScore}–{awayScore}
           </span>
@@ -67,6 +67,6 @@ export function LabMatchCard({ league, match, tz, fetchedAtMs, index }: Props) {
         )}
         <Team team={match.away} />
       </div>
-    </article>
+    </article></Link>
   );
 }

@@ -14,13 +14,14 @@ type Props = {
   minute: string;
   /** Exact clock at fetch time, e.g. "66:21". Without it the minute is shown as reported. */
   clock?: string;
+  clockSeconds?: number | null;
   /** When the server fetched the clock, in epoch milliseconds. */
   fetchedAtMs: number;
 };
 
 /** A live minute that keeps counting between data refreshes. */
-export function LiveMinute({ minute, clock, fetchedAtMs }: Props) {
-  const parsed = parseClockSeconds(clock);
+export function LiveMinute({ minute, clock, clockSeconds, fetchedAtMs }: Props) {
+  const parsed = clockSeconds === undefined ? parseClockSeconds(clock) : clockSeconds;
   // Stoppage-time labels ("45+2’") are shown as reported and never counted locally.
   const seconds = parsed !== null && !isStoppageMinute(minute) ? parsed : null;
 

@@ -43,3 +43,21 @@ Database engine, hosting, authentication, AI model/provider, MCP transport, upda
 
 - https://nextjs.org/docs/app/getting-started/installation
 - https://tailwindcss.com/docs/installation/framework-guides/nextjs
+
+## Normalized dashboard match schedule
+
+`/dashboard` now reads matches through `src/lib/matches/service.ts` → the FotMob `MatchProvider` → the existing cached and validated FotMob fetch → `mapFotMobDay`. Its hero, ticker and complete schedule consume the normalized model. The full schedule includes every selected match, grouped by competition stage; stage keys remain separate and competition counts are distinct competition IDs. Existing date/league URLs and live refresh behavior are preserved. Provider failures stay distinct from successfully empty days.
+
+The classic `/` page and the dashboard player spotlight retain their existing data paths. The normalized contract in this milestone covers matches only.
+
+## Match detail page
+
+Dashboard cards and the featured match link to `/matches/fotmob:<id>`. The server validates the provider-scoped ID, calls the existing `get_match_page` MCP tool, and maps its response to `MatchDetail`. The page shows match information, events, starting lineups/substitutes and grouped team stats. Missing coverage is explicit; missing scores/stats never become zero. Live matches refresh every 30 seconds; scheduled matches every 90 seconds. Only successful details are cached briefly; unavailable responses retry. Invalid IDs show the not-found page. Commentary, shot maps and pitch diagrams remain deferred.
+
+## Match commentary
+
+`MatchCommentary` streams inside an independent Suspense boundary. The server service validates the provider ID and calls cached `get_match_commentary` with `detail=auto` and a 50-line limit. The adapter exposes a provider-independent commentary model, preserves newest-first ordering, and distinguishes no coverage, empty updates and fetch failure. Human-written and automatic sources are labelled. Successful and no-coverage responses are briefly cached; failures throw out of the cache and become unavailable. The existing match-page refresh timer updates commentary while live.
+
+## League pages
+
+The sidebar trophy opens `/leagues`, listing the seven main competitions. `/leagues/fotmob:<id>` shows the current season, overall standings (separate conference/stage tables where supplied), latest ten results and next ten scheduled fixtures, plus live matches when present. Match cards link to the existing detail pages. A server-only fetch uses the MCP `fetch_fotmob_route` leagues route; `src/lib/competitions/` validates and normalizes the response. Missing statistics remain unknown rather than zero, and absent standings/fixtures have explicit messages. League data is cached briefly; live league pages refresh every 90 seconds and unavailable pages retry. Historical season selection and league statistics remain deferred.

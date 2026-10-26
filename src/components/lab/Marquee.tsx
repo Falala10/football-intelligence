@@ -4,11 +4,11 @@ function Items({ entries }: { entries: Entry[] }) {
   return (
     <>
       {entries.map(({ match }) => (
-        <span key={match.matchId} className="lab-tick">
+        <span key={match.id} className="lab-tick">
           <b>
-            {match.home.name} {match.home.score ?? "-"}–{match.away.score ?? "-"} {match.away.name}
+            {match.home.name} {match.score?.home ?? "-"}–{match.score?.away ?? "-"} {match.away.name}
           </b>
-          <em>{match.state === "halftime" ? "HT" : (match.minute ?? "LIVE")}</em>
+          <em>{match.status === "halftime" ? "HT" : (match.live?.minuteLabel ?? "LIVE")}</em>
         </span>
       ))}
     </>

@@ -13,3 +13,10 @@ next-env.d.ts
 !/data/raw/manifest.json
 *.db
 *.sqlite*
+
+# Local assistant settings and Finder clipboard artifacts
+/.claude/
+*.textClipping
+
+# Local photo exploration files
+/experiments/photos/

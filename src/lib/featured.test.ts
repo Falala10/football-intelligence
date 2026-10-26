@@ -1,14 +1,14 @@
 import { describe, expect, it } from "vitest";
 
 import { pickFeaturedMatch, pickOtherMatches } from "./featured";
-import type { LeagueSection, Match, MatchState } from "./fotmob/types";
+import type { CompetitionGroup, Match, MatchStatus } from "./matches/model";
 
-function match(id: string, state: MatchState, kickoffUtc?: string): Match {
-  return { matchId: id, state, kickoffUtc, home: { name: `Home ${id}` }, away: { name: `Away ${id}` } };
+function match(id: string, state: MatchStatus, kickoffUtc?: string): Match {
+  return { id, provider: "fotmob", providerMatchId: id, status: state, kickoffUtc: kickoffUtc ?? null, home: { id: null, name: `Home ${id}`, shortName: null, crestUrl: null }, away: { id: null, name: `Away ${id}`, shortName: null, crestUrl: null }, score: null, redCards: { home: 0, away: 0 }, live: null };
 }
 
-function league(leagueId: string, matches: Match[]): LeagueSection {
-  return { leagueId, sectionId: `s-${leagueId}`, name: `League ${leagueId}`, matches };
+function league(leagueId: string, matches: Match[]): CompetitionGroup {
+  return { id: `s-${leagueId}`, competition: { id: `fotmob:${leagueId}`, name: `League ${leagueId}`, parentName: null, country: null, logoUrl: null }, matches };
 }
 
 describe("pickFeaturedMatch", () => {
@@ -19,7 +19,7 @@ describe("pickFeaturedMatch", () => {
     ];
     const featured = pickFeaturedMatch(leagues);
     expect(featured?.kind).toBe("live");
-    expect(featured?.match.matchId).toBe("b");
+    expect(featured?.match.id).toBe("b");
   });
 
   it("counts half-time as live", () => {
@@ -33,7 +33,7 @@ describe("pickFeaturedMatch", () => {
     ];
     const featured = pickFeaturedMatch(leagues);
     expect(featured?.kind).toBe("next");
-    expect(featured?.match.matchId).toBe("early");
+    expect(featured?.match.id).toBe("early");
   });
 
   it("falls back to the earliest kick-off overall when no sidebar league has one", () => {
@@ -41,7 +41,7 @@ describe("pickFeaturedMatch", () => {
       league("999", [match("b", "scheduled", "2026-09-24T12:00:00Z")]),
       league("888", [match("a", "scheduled", "2026-09-24T10:00:00Z")]),
     ];
-    expect(pickFeaturedMatch(leagues)?.match.matchId).toBe("a");
+    expect(pickFeaturedMatch(leagues)?.match.id).toBe("a");
   });
 
   it("ignores scheduled matches with no kick-off time", () => {
@@ -52,7 +52,7 @@ describe("pickFeaturedMatch", () => {
     const leagues = [league("999", [match("x", "finished")]), league("87", [match("y", "finished")])];
     const featured = pickFeaturedMatch(leagues);
     expect(featured?.kind).toBe("result");
-    expect(featured?.match.matchId).toBe("y");
+    expect(featured?.match.id).toBe("y");
   });
 
   it("returns null when there is nothing to feature", () => {
@@ -68,12 +68,12 @@ describe("pickOtherMatches", () => {
   ];
 
   it("puts live first, then upcoming, then finished, keeping order within each group", () => {
-    expect(pickOtherMatches(leagues, null, 10).map((e) => e.match.matchId)).toEqual(["now", "soon", "later", "done"]);
+    expect(pickOtherMatches(leagues, null, 10).map((e) => e.match.id)).toEqual(["now", "soon", "later", "done"]);
   });
 
   it("leaves out the featured match", () => {
     const featured = pickFeaturedMatch(leagues);
-    expect(pickOtherMatches(leagues, featured, 10).map((e) => e.match.matchId)).not.toContain("now");
+    expect(pickOtherMatches(leagues, featured, 10).map((e) => e.match.id)).not.toContain("now");
   });
 
   it("respects the limit and never returns a negative slice", () => {

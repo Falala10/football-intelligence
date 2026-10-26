@@ -9,7 +9,7 @@ function Svg({ children }: { children: React.ReactNode }) {
 }
 
 /** Icon navigation. Only pages that exist are listed. */
-export function LabRail() {
+export function LabRail({ current = "dashboard" }: { current?: "dashboard" | "leagues" }) {
   return (
     <nav aria-label="Main" className="lab-rail">
       <span className="lab-logo" aria-hidden="true">
@@ -19,7 +19,7 @@ export function LabRail() {
           <path d="M12 7.5V2.6M15.4 10l4.7-1.5M14.1 14l2.9 4M9.9 14l-2.9 4M8.6 10L3.9 8.5" />
         </svg>
       </span>
-      <Link href="/dashboard" aria-current="page" aria-label="Dashboard" title="Dashboard">
+      <Link href="/dashboard" aria-current={current === "dashboard" ? "page" : undefined} aria-label="Dashboard" title="Dashboard">
         <Svg>
           <path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />
         </Svg>
@@ -30,6 +30,7 @@ export function LabRail() {
           <path d="M16 2v4M8 2v4M3 10h18" />
         </Svg>
       </Link>
+      <Link href="/leagues" aria-current={current === "leagues" ? "page" : undefined} aria-label="Leagues" title="Leagues"><Svg><path d="M8 3h8v5a4 4 0 0 1-8 0V3ZM8 5H4v2a4 4 0 0 0 4 4m8-6h4v2a4 4 0 0 1-4 4M12 12v7m-4 2h8" /></Svg></Link>
     </nav>
   );
 }

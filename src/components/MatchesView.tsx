@@ -59,7 +59,10 @@ export async function MatchesView({ searchParams }: { searchParams: SearchParams
             <h1 className="font-display text-3xl font-bold tracking-wide">Matches</h1>
             <p className="text-[15px] font-medium text-muted">{formatLongDate(params.date)}</p>
           </div>
-          <div className="md:hidden">
+          <div className="flex shrink-0 items-center gap-2 md:hidden">
+            <Link href="/dashboard" className="rounded-lg px-2 py-2 text-sm font-medium text-brand hover:bg-brand-soft">
+              Home
+            </Link>
             <ThemeToggle compact />
           </div>
         </div>
