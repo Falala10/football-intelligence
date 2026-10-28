@@ -33,7 +33,7 @@ export function mapFotMobDetail(raw: unknown, expectedId: string): MatchDetail |
     let description: string | null = null;
     if (type === "goal") description = `${player ?? "Goal"}${player ? " — Goal" : ""}${text(e.assist) ? ` (assist: ${e.assist})` : ""}${e.ownGoal === true ? " (own goal)" : e.penalty === true ? " (penalty)" : ""}`;
     else if (type === "card") description = `${player ?? "Player"} — ${(text(e.card)?.replaceAll("_", " ") ?? "Card")}${text(e.reason) ? ` (${e.reason})` : ""}`;
-    else if (type === "sub") description = `${text(obj(e.in).name) ?? "Player"} on, ${text(obj(e.out).name) ?? "player"} off`;
+    else if (type === "sub") description = `${text(obj(e.in).name) ?? "Player"} on, ${text(obj(e.out).name) ?? "player"} off${e.injury === true ? " — injury-related substitution" : ""}`;
     else if (type === "var") description = `VAR — ${text(e.decision) ?? (e.pending === true ? "Decision pending" : "Review")}`;
     else if (type === "period") description = text(e.label);
     else if (type === "added_time") description = `${value(e.minutes) ?? "Unknown"} minutes added`;
@@ -42,9 +42,15 @@ export function mapFotMobDetail(raw: unknown, expectedId: string): MatchDetail |
     return { minute: base ? `${base}${extra ? `+${extra}` : ""}’` : null, side: e.side === "home" || e.side === "away" ? e.side : null, description };
   }).filter((e): e is { minute: string | null; side: "home" | "away" | null; description: string } => e.description !== null);
   const stats = list(r.stats).map(obj).filter((g) => text(g.title)).map((g) => ({ title: text(g.title)!, items: list(g.items).map(obj).filter((i) => text(i.title)).map((i) => ({ label: text(i.title)!, home: value(i.home), away: value(i.away) })) }));
+  const competition = obj(r.competition), round = value(competition.round);
+  // EFL Cup round four is the last 16; numeric rounds in other competitions
+  // are retained as reported, never treated as a generic knockout-stage code.
+  // Format verified: https://www.efl.com/news/2026/september/16/carabao-cup-round-four-draw-in-full/
+  const eflCup = String(competition.parentId ?? competition.id) === "133";
+  const competitionStage = round === null ? null : eflCup && round === "4" ? "Round of 16 (fourth round)" : /^\d+$/.test(round) ? `Round ${round}` : round;
   return {
     match: { id: `fotmob:${expectedId}`, provider: "fotmob", providerMatchId: expectedId, status: state, kickoffUtc: text(status.kickoffUtc) && !Number.isNaN(Date.parse(String(status.kickoffUtc))) ? String(status.kickoffUtc) : null, home: team(home), away: team(away), score: started && h !== null && a !== null ? { home: h, away: a } : null, redCards: { home: 0, away: 0 }, live: inPlay ? { minuteLabel: minute, clockSeconds: state === "live" && !isStoppageMinute(minute ?? "") ? parseClockSeconds(text(status.clock) ?? undefined) : null, asOfUtc: fetched } : null },
-    fetchedAtUtc: fetched, competitionName: text(obj(r.competition).name), venue: { stadium: text(venue.stadium), city: text(venue.city), referee: text(venue.referee) },
+    fetchedAtUtc: fetched, competitionName: text(competition.name), competitionId: /^[1-9]\d*$/.test(String(competition.parentId ?? competition.id)) ? `fotmob:${competition.parentId ?? competition.id}` : null, competitionStage, venue: { stadium: text(venue.stadium), city: text(venue.city), referee: text(venue.referee) },
     events: available.events === true && Array.isArray(r.events) ? events : null,
     lineups: { home: lineup(lineups.home), away: lineup(lineups.away) },
     stats: available.stats === true && Array.isArray(r.stats) ? stats : null,

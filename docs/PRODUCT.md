@@ -2,9 +2,9 @@
 
 A personal football intelligence web product, initially running locally, for understanding current football and exploring historical matches. Start small, use it, and let actual coverage gaps guide future work. Public launch and monetization are outside the current plan.
 
-## Current milestone: M0
+## Current status (2026-10-26)
 
-Deliver a VS Code-ready repository, a running placeholder page, standard tooling, and a documented plan. No football UI, match search, player pages, provider connections, database, ingestion, or AI chat is implemented.
+A local current-football prototype is built: classic matches, a dashboard, match details/commentary and league standings/results/fixtures. Live data depends on the separately running FotMob MCP service. Dedicated team/player pages, historical imports, a database and AI chat remain future work. See ROADMAP.md for the current checkpoint and VERIFICATION.md for checks and limitations.
 
 ## Future direction
 
@@ -14,4 +14,4 @@ The future intelligence layer should select relevant sources based on the questi
 
 ## Review gate
 
-Review and accept M0 before starting any later milestone. The order below is a plan, not authorization to implement it.
+M0 was accepted. Review each new milestone before starting the next. The order below is a plan, not authorization to implement it.

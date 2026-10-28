@@ -41,3 +41,8 @@ describe("match detail mapping", () => {
     for (const bad of [null, {}, { ...raw, state: "unavailable" }, { ...raw, matchId: "456" }, { ...raw, status: {} }, { ...raw, fetchedAtUtc: "bad" }]) expect(mapFotMobDetail(bad, "123")).toBeNull();
   });
 });
+
+it("preserves the source injury reason without inventing a diagnosis or cause", () => {
+  const d = mapFotMobDetail({ ...raw, events: [{ type: "sub", minute: 30, injury: true, in: { name: "Balde" }, out: { name: "Espart" } }] }, "123")!;
+  expect(d.events?.[0].description).toBe("Balde on, Espart off — injury-related substitution");
+});

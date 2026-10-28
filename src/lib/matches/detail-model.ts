@@ -6,6 +6,8 @@ export type MatchDetail = {
   match: Match;
   fetchedAtUtc: string;
   competitionName: string | null;
+  competitionId: string | null;
+  competitionStage: string | null;
   venue: { stadium: string | null; city: string | null; referee: string | null };
   events: { minute: string | null; side: "home" | "away" | null; description: string }[] | null;
   lineups: { home: Lineup | null; away: Lineup | null };

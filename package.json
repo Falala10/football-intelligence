@@ -12,12 +12,16 @@
     "lint": "eslint . --max-warnings=0",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
-    "check": "npm run lint && npm run typecheck && npm run test && npm run build"
+    "check": "npm run lint && npm run typecheck && npm run test && npm run build",
+    "eval:chat": "node scripts/evaluate-chat.mjs"
   },
   "dependencies": {
+    "dompurify": "3.4.17",
+    "fast-xml-parser": "5.11.2",
     "next": "16.3.6",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "react-markdown": "10.1.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

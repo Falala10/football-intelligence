@@ -3,7 +3,7 @@ import { APP_TIMEZONE } from "@/lib/config";
 import { formatUpdatedTime } from "@/lib/dates";
 export async function MatchCommentary({ id }: { id: string }) {
   const result = await getMatchCommentary(id);
-  return <section className="lab-card detail-panel" aria-label="Commentary"><h2>Commentary</h2>
+  return <section id="match-commentary" className="lab-card detail-panel" aria-label="Commentary"><h2>Commentary</h2>
     {result.status === "none" ? <p>Commentary isn’t provided for this match.</p> : result.status === "unavailable" ? <p>Commentary couldn’t be loaded right now.</p> : <>
       <p className="lab-eyebrow">{result.data.source === "human" ? "Human-written commentary" : "Automatic match updates"} · Newest first</p>
       <small>Updated {formatUpdatedTime(result.data.fetchedAtUtc, APP_TIMEZONE)} · Up to 50 latest updates</small>

@@ -1,6 +1,6 @@
 # Data sources
 
-This inventory records the agreed plan, not a claim that integrations are implemented. No source is connected to the app at M0.
+Current FotMob data is integrated. See [the coverage audit](DATA-COVERAGE-AUDIT.md) dated 2026-10-26 for live sample findings, historical CSV counts and known blockers. The table below preserves the original M0 inventory; its M0 status is historical, not current.
 
 | Source | Intended role | M0 status | Coverage caution |
 | --- | --- | --- | --- |

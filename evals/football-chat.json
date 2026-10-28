@@ -1,0 +1,223 @@
+[
+  {
+    "id": "concept",
+    "question": "What is a high defensive line?",
+    "checks": [
+      "Explains compactness, pressing and space behind without claiming a specific match used it."
+    ],
+    "turns": [
+      "Why does pressure on the passer matter?"
+    ]
+  },
+  {
+    "id": "award",
+    "question": "Who won the men's Ballon d'Or in 2025?",
+    "checks": [
+      "Correct winner is Ousmane Dembélé, event and year retained."
+    ],
+    "turns": [
+      "Who came second?"
+    ]
+  },
+  {
+    "id": "club-form",
+    "question": "Why are Manchester United not doing well this season?",
+    "checks": [
+      "Checks the premise against dated current results.",
+      "Explains a supported mechanism; distinguishes recent examples from a season-wide trend.",
+      "Does not invent the manager, injuries or dressing-room causes."
+    ],
+    "turns": [
+      "But why, beyond the scores?"
+    ]
+  },
+  {
+    "id": "match-cause",
+    "question": "Why did Barcelona lose this match? Give me a detailed explanation.",
+    "checks": [
+      "Correct viewed match, score and participants.",
+      "Connects incidents and chance quality to interpretation; does not turn xG into proof of a tactic."
+    ]
+  },
+  {
+    "id": "injury",
+    "question": "Why did Xavi Espart come off so early in this match?",
+    "checks": [
+      "Uses match incident narrative if available; preserves uncertainty about the exact causal challenge.",
+      "Does not invent a medical diagnosis or recovery date."
+    ]
+  },
+  {
+    "id": "tactics",
+    "question": "Did Barcelona use a high line in this game? How did it affect them?",
+    "checks": [
+      "Does not infer measured line height from possession, xG or formation.",
+      "Offers bounded analysis rather than a blanket refusal."
+    ],
+    "turns": [
+      "Why is that risky for Barcelona specifically?"
+    ]
+  },
+  {
+    "id": "history",
+    "question": "How did Barcelona do in the 2024-25 LaLiga season?",
+    "checks": [
+      "Uses the requested completed season, not current records.",
+      "Distinguishes league results from all competitions."
+    ],
+    "turns": [
+      "Compare that with the season before."
+    ]
+  },
+  {
+    "id": "opinion",
+    "question": "Mbappé is overrated.",
+    "checks": [
+      "Engages the opinion without automatically agreeing or dumping a full match report.",
+      "Does not fabricate earlier praise or claim a lucky goal proves clever movement."
+    ]
+  },
+  {
+    "id": "news",
+    "question": "What is the latest transfer news about Barcelona?",
+    "checks": [
+      "Uses dated current reporting, distinguishes rumours from confirmed transfers.",
+      "Admits missing coverage rather than inventing fresh news."
+    ]
+  },
+  {
+    "id": "topic-switch",
+    "question": "What is a false nine?",
+    "history": [
+      {
+        "role": "user",
+        "text": "Why is Barcelona's high line risky?"
+      },
+      {
+        "role": "assistant",
+        "text": "It leaves space behind if opponents can bypass pressure on the ball."
+      }
+    ],
+    "checks": [
+      "Answers the new topic, without trapping the conversation in Barcelona's viewed match."
+    ]
+  },
+  {
+    "id": "club-follow-up",
+    "question": "But why, beyond the scores?",
+    "history": [
+      {
+        "role": "user",
+        "text": "Why are Manchester United not doing well this season?"
+      },
+      {
+        "role": "assistant",
+        "text": "Their recent results have been poor; we should look at the chance patterns."
+      }
+    ],
+    "checks": [
+      "Retains Manchester United rather than reverting to the viewed Barcelona match.",
+      "Retrieves current club facts rather than treating prior assistant text as verified.",
+      "Gives supported reasoning or a clear availability limitation."
+    ]
+  },
+  {
+    "id": "match-stage",
+    "question": "what match is this?",
+    "checks": [
+      "Names the viewed teams, competition and supplied stage in the first reply.",
+      "Does not guess a missing knockout stage from teams or date."
+    ]
+  },
+  {
+    "id": "transfer-roundup",
+    "question": "What’s the latest transfer news?",
+    "turns": [
+      "What about Arsenal?"
+    ],
+    "checks": [
+      "Gives concrete dated transfer reports when available, rather than a generic refusal.",
+      "Labels gossip/interest as unconfirmed and does not invent completed moves.",
+      "Does not substitute podcasts, award stories or newsletter promotions.",
+      "Keeps club-specific follow-up reports relevant and does not pretend older reports are today’s news."
+    ]
+  },
+  {
+    "id": "tournament-field",
+    "question": "Which teams are still in the EFL Cup and what are the next ties?",
+    "turns": [
+      "When is the EFL Cup final?"
+    ],
+    "checks": [
+      "Uses the current competition season and its supplied active field, not only the viewed match.",
+      "Lists actual next ties and dates, distinguishes partial coverage and unknown future draws.",
+      "Uses the official calendar or final fixture for the date, without inventing a kickoff time."
+    ]
+  },
+  {
+    "id": "tournament-pair",
+    "question": "Could Liverpool and Chelsea both reach the EFL Cup final?",
+    "checks": [
+      "Checks actual current ties/results: current opponents before the final cannot both advance.",
+      "Does not propose eliminated teams or assume a fixed future bracket."
+    ]
+  },
+  {
+    "id": "tournament-route",
+    "question": "What is Arsenal’s route to the EFL Cup final?",
+    "checks": [
+      "Uses supplied completed cup results and the known next tie.",
+      "Future opponents are only named where explicitly supplied; draw order is not a bracket link.",
+      "If already eliminated at evaluation time, says so instead of manufacturing a route."
+    ]
+  },
+  {
+    "id": "other-cup-identity",
+    "matchId": "fotmob:6162740",
+    "question": "what cup even is this?",
+    "turns": [
+      "Can you tell me what cup these teams are playing in?"
+    ],
+    "checks": [
+      "Identifies the viewed Dortmund–Bremen match as DFB Pokal, round 2.",
+      "Known page facts survive a generic-model/tournament fallback, even without rule-specific coverage.",
+      "Does not substitute EFL Cup or say no match context is attached."
+    ]
+  },
+  {
+    "id": "match-explanation-depth",
+    "matchId": "fotmob:5868105",
+    "question": "Why did Barcelona lose this game? Explain the decisive moments and chance quality, not just the score.",
+    "turns": [
+      "What about their midfield?",
+      "Did the early substitution actually improve things?"
+    ],
+    "checks": [
+      "Connects reported incidents to exact supplied stats, without inventing pressing or positional tracking.",
+      "Follow-ups advance the explanation rather than repeat the report.",
+      "Does not claim whole-game stats prove improvement after the substitution."
+    ]
+  },
+  {
+    "id": "rating-explanation",
+    "matchId": "fotmob:5868105",
+    "question": "Explain Kylian Mbappé’s rating in this game. What did he actually do well and poorly?",
+    "turns": [
+      "How many rating points did each goal add?"
+    ],
+    "checks": [
+      "Verifies actual provider rating and selects position-relevant supplied player stats.",
+      "Does not invent weaknesses, individual errors or precise rating formula weights.",
+      "Refuses exact point attribution briefly while still explaining the performance."
+    ]
+  },
+  {
+    "id": "sparse-match-explanation",
+    "matchId": "fotmob:5903851",
+    "question": "Why did AGF lose this game? Did pressing cause it?",
+    "checks": [
+      "Uses actual available measurements and events; no unsupported pressing claim from the scoreline.",
+      "Acknowledges the specific missing tactical observations without refusing all analysis."
+    ]
+  }
+]

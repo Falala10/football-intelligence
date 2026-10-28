@@ -10,11 +10,11 @@ function standing(raw: unknown): Standing | null {
   const r = obj(raw); if (!text(r.name)) return null;
   return { position: int(r.idx), team: team(r), played: int(r.played), wins: int(r.wins), draws: int(r.draws), losses: int(r.losses), goalDifference: int(r.goalConDiff), points: int(r.pts) };
 }
-function match(raw: unknown, fetched: string): Match | null {
+export function mapFotMobFixture(raw: unknown, fetched: string): Match | null {
   const r = obj(raw), s = obj(r.status), home = obj(r.home), away = obj(r.away), n = id(r.id);
   if (!n || !text(home.name) || !text(away.name)) return null;
   const reason = obj(s.reason), key = String(reason.shortKey ?? reason.longKey ?? "").toLowerCase();
-  const status: MatchStatus = s.cancelled === true ? "cancelled" : s.postponed === true || key.includes("postpon") ? "postponed" : s.finished === true ? "finished" : key.includes("halftime") || key.includes("half_time") || reason.short === "HT" ? "halftime" : s.started === true ? "live" : "scheduled";
+  const status: MatchStatus = s.cancelled === true || s.awarded === true || /abandon|cancel/.test(key) ? "cancelled" : s.postponed === true || key.includes("postpon") ? "postponed" : s.finished === true ? "finished" : key.includes("halftime") || key.includes("half_time") || reason.short === "HT" ? "halftime" : s.started === true ? "live" : "scheduled";
   const scores = typeof s.scoreStr === "string" ? /^(\d+)\s*[-–]\s*(\d+)$/.exec(s.scoreStr.trim()) : null;
   const inPlay = status === "live" || status === "halftime";
   const utc = text(s.utcTime);
@@ -41,6 +41,6 @@ export function mapFotMobLeague(raw: unknown, expectedId: string, fetchedAtUtc: 
   }
   visit(payload.table, competition.name);
   const fixtures = obj(payload.fixtures).allMatches;
-  const matches = Array.isArray(fixtures) ? fixtures.map((r) => match(r, fetchedAtUtc)).filter((m): m is Match => m !== null) : null;
+  const matches = Array.isArray(fixtures) ? fixtures.map((r) => mapFotMobFixture(r, fetchedAtUtc)).filter((m): m is Match => m !== null) : null;
   return { competition, season: text(details.selectedSeason), fetchedAtUtc, tables: tables.length ? tables : null, matches };
 }

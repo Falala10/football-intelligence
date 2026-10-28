@@ -1,4 +1,7 @@
+import { MatchAiPanel } from "./MatchAiPanel";
+import { aiConfigured } from "@/lib/ai/gemini";
 import { Suspense } from "react";
+import { MatchPlayerGames } from "./MatchPlayerGames";
 import { MatchCommentary } from "./MatchCommentary";
 import { io } from "next/cache";
 import Link from "next/link";
@@ -32,15 +35,17 @@ export async function MatchDetailView({ params }: { params: Promise<{ id: string
   const label = { scheduled: "Scheduled", live: "Live", halftime: "Half-time", finished: "Full time", postponed: "Postponed", cancelled: "Cancelled" }[match.status];
   return <main className="lab-main"><LabRail /><LiveRefresher intervalMs={inPlay ? 30000 : match.status === "scheduled" ? 90000 : null} /><div className="lab-wrap">
     <Link href="/dashboard" className="lab-chip">← Dashboard</Link>
-    <header className="lab-card detail-header"><p className="lab-eyebrow">{data.competitionName ?? "Match"}</p><h1 className="detail-title">{match.home.name} vs {match.away.name}</h1>
+    <header id="match-summary" className="lab-card detail-header"><p className="lab-eyebrow">{data.competitionName ?? "Match"}</p><h1 className="detail-title">{match.home.name} vs {match.away.name}</h1>
       <p className={inPlay ? "lab-live" : "lab-pill"}>{label}{match.status === "live" && match.live?.minuteLabel ? <> · <LiveMinute minute={match.live.minuteLabel} clockSeconds={match.live.clockSeconds} fetchedAtMs={Date.parse(match.live.asOfUtc)} /></> : null}</p>
       <div className="detail-score"><Crest src={match.home.crestUrl} name={match.home.name} size={64} /><strong>{match.score ? `${match.score.home}–${match.score.away}` : "VS"}</strong><Crest src={match.away.crestUrl} name={match.away.name} size={64} /></div>
       <p>{match.kickoffUtc ? `${new Intl.DateTimeFormat("en-GB", { timeZone: APP_TIMEZONE, dateStyle: "medium" }).format(new Date(match.kickoffUtc))} · ${formatKickoff(match.kickoffUtc, APP_TIMEZONE)}` : "Kick-off to be confirmed"} · {APP_TIMEZONE.replaceAll("_", " ")}</p>
       <p>{[data.venue.stadium, data.venue.city].filter(Boolean).join(" · ") || "Venue unavailable"}{data.venue.referee ? ` · Referee: ${data.venue.referee}` : ""}</p><small>Updated {formatUpdatedTime(data.fetchedAtUtc, APP_TIMEZONE)}</small>
     </header>
-    <section className="lab-card detail-panel"><h2>Match events</h2>{data.events === null ? <p>Events are not available for this match.</p> : data.events.length === 0 ? <p>No events reported yet.</p> : <ol className="detail-events">{data.events.map((event, i) => <li key={i}><strong>{event.minute ?? "—"}</strong><span>{event.description}<small>{event.side === "home" ? match.home.name : event.side === "away" ? match.away.name : ""}</small></span></li>)}</ol>}</section>
+    <MatchAiPanel key={`ai-${match.id}`} matchId={match.id} title={`${match.home.name} vs ${match.away.name}`} configured={aiConfigured()} />
+    <section id="match-events" className="lab-card detail-panel"><h2>Match events</h2>{data.events === null ? <p>Events are not available for this match.</p> : data.events.length === 0 ? <p>No events reported yet.</p> : <ol className="detail-events">{data.events.map((event, i) => <li key={i}><strong>{event.minute ?? "—"}</strong><span>{event.description}<small>{event.side === "home" ? match.home.name : event.side === "away" ? match.away.name : ""}</small></span></li>)}</ol>}</section>
+    <Suspense key={`players-${match.id}`} fallback={<section className="lab-card detail-panel" role="status"><h2>Player performance</h2><p>Loading player stats and heatmaps…</p></section>}><MatchPlayerGames id={match.id} /></Suspense>
     <Suspense key={match.id} fallback={<section className="lab-card detail-panel" role="status"><h2>Commentary</h2><p>Loading commentary…</p></section>}><MatchCommentary id={match.id} /></Suspense>
-    <section><h2 className="lab-display">Lineups</h2><div className="detail-columns"><LineupList name={match.home.name} lineup={data.lineups.home} /><LineupList name={match.away.name} lineup={data.lineups.away} /></div></section>
-    <section className="lab-card detail-panel"><h2>Team stats</h2>{!data.stats?.length ? <p>Team stats are not available for this match.</p> : data.stats.map((group, i) => <div key={i}><h3>{group.title}</h3><table className="detail-stats"><caption className="sr-only">{group.title}</caption><thead><tr><th scope="col">{match.home.name}</th><th scope="col">Statistic</th><th scope="col">{match.away.name}</th></tr></thead><tbody>{group.items.map((stat, n) => <tr key={n}><td>{stat.home ?? "—"}</td><th scope="row">{stat.label}</th><td>{stat.away ?? "—"}</td></tr>)}</tbody></table></div>)}</section>
+    <section id="match-lineups"><h2 className="lab-display">Lineups</h2><div className="detail-columns"><LineupList name={match.home.name} lineup={data.lineups.home} /><LineupList name={match.away.name} lineup={data.lineups.away} /></div></section>
+    <section id="team-stats" className="lab-card detail-panel"><h2>Team stats</h2>{!data.stats?.length ? <p>Team stats are not available for this match.</p> : data.stats.map((group, i) => <div key={i}><h3>{group.title}</h3><table className="detail-stats"><caption className="sr-only">{group.title}</caption><thead><tr><th scope="col">{match.home.name}</th><th scope="col">Statistic</th><th scope="col">{match.away.name}</th></tr></thead><tbody>{group.items.map((stat, n) => <tr key={n}><td>{stat.home ?? "—"}</td><th scope="row">{stat.label}</th><td>{stat.away ?? "—"}</td></tr>)}</tbody></table></div>)}</section>
   </div></main>;
 }
